@@ -8,7 +8,7 @@ function addFeuille()
 	img.style.position = "absolute"
 	img.style.left = x + 'px'
 	img.style.top = y + 'px'
-	img.setAttribute("src", "feuille.jpg")
+	img.setAttribute("src", "leaf1.png")
 	img.style.height = "75px";
 	div.appendChild(img)
 }
