@@ -10,10 +10,10 @@ let date = new Date()
 let heur = date.getHours()
 let randomx = 0;
 let randomy = 0;
-let storagefeuille = [ ];
+let storagefeuille = [];
 let compteur = 0;
 
-function startTimer (){
+function startTimer () {
 	timer = setInterval(()=>{  
 	date = new Date()
 	let temps = date.getHours() + ":" +(date.getMinutes() < 10 ? '0' : '') + date.getMinutes() + ":" +(date.getSeconds() < 10 ? '0' : '') + date.getSeconds();                                                
@@ -61,11 +61,11 @@ function addfeuilles(){
  // x min = 400  et 1075
  // y min = 0  et max  450
 
-if(heur>16){
+if (heur>16){
 	div.style.filter = "grayscale(0.8)"
 }
 
-if(sessionStorage.getItem("key")) {
+if (sessionStorage.getItem("key")) {
 	let storagefeuille = JSON.parse(sessionStorage.getItem("key"))
 	console.log(storagefeuille)
 }
