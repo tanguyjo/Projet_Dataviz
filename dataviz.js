@@ -1,9 +1,9 @@
 const div = document.querySelector('.feuille'); 
 const h1 = document.querySelector('h1')
 const boutton = document.getElementById('boutton')
-const XMAX = 1200
-const XMIN = 450
-const YMAX = 450
+const XMAX = 70
+const XMIN = 25
+const YMAX = 50
 const YMIN = 0
 const MAXCOUNTER = 60
 
@@ -47,8 +47,8 @@ function addOneLeaf(x,y) // fx qui ajoute une feuille
 {
 	const img = document.createElement('img')
 	img.style.position = "absolute"
-	img.style.left = x + 'px'
-	img.style.top = y + 'px'
+	img.style.left = x + '%'
+	img.style.top = y + '%'
 	img.setAttribute("src", "leaf1.png")
 	img.style.height = "75px";
 	div.appendChild(img)
