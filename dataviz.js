@@ -1,10 +1,12 @@
 const div = document.querySelector('.feuille');
 const h1 = document.querySelector('h1')
+const boutton = document.getElementById('boutton')
 const XMAX = 1075
 const XMIN = 400
 const YMAX = 450
 const YMIN = 0
 
+let addfeuille;
 let timer;  
 let date = new Date()
 let heur = date.getHours()
@@ -12,6 +14,12 @@ let randomx = 0;
 let randomy = 0;
 let storagefeuille = [];
 let compteur = 0;
+
+boutton.addEventListener('click', ()=>{
+	sessionStorage.clear()
+	div.innerHTML = ""
+	clearInterval(addfeuille)
+} ) 
 
 function startTimer () {
 	timer = setInterval(()=>{  
@@ -42,7 +50,7 @@ function adduneFeuille(x,y)
 }
 
 function addfeuilles(){
-	let addfeuille = setInterval (()=> {
+	 addfeuille = setInterval (()=> {
 		getRandomx()
 		getRandomy()
 		storagefeuille.push({x : randomx, y : randomy})
@@ -66,8 +74,14 @@ if (heur>16){
 }
 
 if (sessionStorage.getItem("key")) {
-	let storagefeuille = JSON.parse(sessionStorage.getItem("key"))
+	 storagefeuille = JSON.parse(sessionStorage.getItem("key"))
 	console.log(storagefeuille)
+	for(i = 0; i < storagefeuille.length; i++){
+		adduneFeuille(storagefeuille[i].x,storagefeuille[i].y)
+		compteur++;
+		
+		
+	} if(compteur<50){addfeuilles()}
 }
 else {
 	addfeuilles()
