@@ -1,12 +1,14 @@
 const div = document.querySelector('.feuille'); 
 const h1 = document.querySelector('h1')
 const boutton = document.getElementById('boutton')
-const XMAX = 1075
-const XMIN = 400
+const XMAX = 1200
+const XMIN = 450
 const YMAX = 450
 const YMIN = 0
+const MAXCOUNTER = 60
 
 let addLeaf;
+let deadLeaf;
 let timer;  
 let date = new Date()
 let hour = date.getHours()
@@ -19,6 +21,9 @@ boutton.addEventListener('click', ()=>{ //ajout d'un ecouteur quand le boutton e
 	sessionStorage.clear()    // efface la sessionStorage       
 	div.innerHTML = ""         // efface le html     
 	clearInterval(addLeaf) // arrete l'intervale'addLeaf'
+	counter = 0
+	storageLeaf = []
+	addLeaves()
 } ) 
 
 function startTimer () {        // recupere la date actuelle et l'affiche ds le html
@@ -58,12 +63,32 @@ function addLeaves(){    // fx qui ajoute des feuilles Ã  interval regulier et Ã
 		addOneLeaf(randomx,randomy);
 		counter++;
 		console.log(counter)
-		if (counter == 50){
+		if (counter == MAXCOUNTER){
 			clearInterval(addLeaf)
 			console.log(storageLeaf)
+			deadLeaves()
 		}
 	
 	}, 1000)
+}
+
+function deadLeaves()
+{
+	let imgs = document.querySelectorAll('img');
+	let i = (imgs.length > MAXCOUNTER ? (imgs.length - counter) : 0)
+	deadLeaf = setInterval(() => {
+		imgs[i].style.top = 85 + "%"
+		imgs[i].style.filter = "grayscale(0.8)"
+		imgs[i].style.transform = "rotate(90deg)"
+		i++
+		if (i >= imgs.length)
+		{
+			clearInterval(deadLeaf)
+			counter = 0
+			boutton.click()
+		}
+	}, 1000)
+	
 }
 
  
@@ -73,15 +98,22 @@ if (hour>16){
 }
 
 if (sessionStorage.getItem("key")) {
-	 storageLeaf = JSON.parse(sessionStorage.getItem("key"))
+	storageLeaf = JSON.parse(sessionStorage.getItem("key"))
 	console.log(storageLeaf)
 	for(i = 0; i < storageLeaf.length; i++){
 		addOneLeaf(storageLeaf[i].x,storageLeaf[i].y)
 		counter++;
-		
-		
-	} if(counter<50){addLeaves()}
-}else {
+	} 
+	if(counter<MAXCOUNTER)
+	{
+		addLeaves()
+	}
+	if (storageLeaf.length >= MAXCOUNTER)
+	{
+		deadLeaves()
+	}
+}
+else {
 	addLeaves()
 }
 
