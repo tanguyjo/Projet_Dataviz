@@ -1,6 +1,9 @@
 const div = document.querySelector('.feuille'); 
 const h1 = document.querySelector('h1')
 const boutton = document.getElementById('boutton')
+const weatherImg = document.querySelector('.forecast');
+const validate = document.querySelector('#valider');
+const input = document.querySelector('input')
 const XMAX = 65
 const XMIN = 30
 const YMAX = 60
@@ -11,7 +14,6 @@ let addLeaf;
 let deadLeaf;
 let timer;  
 let date = new Date()
-let hour = date.getHours()
 let randomx = 0;
 let randomy = 0;
 let storageLeaf = [];
@@ -27,16 +29,50 @@ boutton.addEventListener('click', ()=>{ //ajout d'un ecouteur quand le boutton e
 	addLeaves()
 } ) 
 
+valider.addEventListener("click", () => {
+	weatherImg.innerHTML = ""
+	assignConditions(input.value)
+	input.value = ""
+})
+
 async function weather(location) {
 	const response = await fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${location}?unitGroup=metric&key=RWQ5ZQX23WTSV4DU6GZ2BCA25&elements=conditions&contentType=json`)
 	const forecast = await response.json()
 	return (forecast.currentConditions.conditions)
 }
 
-async function assignConditions()
+async function assignConditions(location)
 {
-	conditions = await weather("Lyon")
-	console.log(conditions);
+	conditions = await weather(location)
+	const imgcondition = document.createElement('img')
+	imgcondition.style.marginLeft = "75%"
+	imgcondition.style.height = "200px"
+	if (conditions.includes("Clear"))
+	{
+		console.log('clear');
+		imgcondition.setAttribute('src', 'Sun.png')
+	}
+	else if (conditions.includes("Snow"))
+	{
+		console.log('snow');
+		imgcondition.setAttribute('src', 'Snow.png')
+	}
+	else if (conditions.includes("Rain"))
+	{
+		console.log('rain');
+		imgcondition.setAttribute('src', 'Rain.png')
+	}
+	else if (conditions.includes("Overcast"))
+	{
+		console.log('overcast');
+		imgcondition.setAttribute('src', 'Overcast.png')
+	}
+	else if (conditions.includes("Cloudy"))
+	{
+		console.log('cloudy');
+		imgcondition.setAttribute('src', 'Cloudy.png')
+	}
+	weatherImg.appendChild(imgcondition)
 }
 
 function startTimer () {        // recupere la date actuelle et l'affiche ds le html
@@ -68,7 +104,7 @@ function addOneLeaf(x,y) // fx qui ajoute une feuille
 }
 
 function addLeaves(){    // fx qui ajoute des feuilles à interval regulier et à des positions alléatoires
-	 addLeaf = setInterval (()=> {
+	addLeaf = setInterval (()=> {
 		getRandomx()
 		getRandomy()
 		storageLeaf.push({x : randomx, y : randomy})
@@ -87,7 +123,7 @@ function addLeaves(){    // fx qui ajoute des feuilles à interval regulier et �
 
 function deadLeaves()
 {
-	let imgs = document.querySelectorAll('img');
+	let imgs = document.querySelectorAll('.feuille img');
 	let i = (imgs.length > MAXCOUNTER ? (imgs.length - counter) : 0)
 	deadLeaf = setInterval(() => {
 		imgs[i].style.top = 90 + "%"
@@ -98,16 +134,9 @@ function deadLeaves()
 		{
 			clearInterval(deadLeaf)
 			counter = 0
-			boutton.click()
 		}
 	}, 1000)
 	
-}
-
- 
-if (hour>16){
-	//div.style.filter = "grayscale(0.8)"
-	div.style.filter = "sepia(1) saturate(3)"
 }
 
 if (sessionStorage.getItem("key")) {
@@ -131,3 +160,4 @@ else {
 }
 
 startTimer()
+assignConditions("Lyon")
