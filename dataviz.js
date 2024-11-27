@@ -1,10 +1,10 @@
 const div = document.querySelector('.feuille'); 
 const h1 = document.querySelector('h1')
 const boutton = document.getElementById('boutton')
-const XMAX = 70
-const XMIN = 25
-const YMAX = 50
-const YMIN = 0
+const XMAX = 65
+const XMIN = 30
+const YMAX = 60
+const YMIN = 5
 const MAXCOUNTER = 60
 
 let addLeaf;
@@ -16,6 +16,7 @@ let randomx = 0;
 let randomy = 0;
 let storageLeaf = [];
 let counter = 0;
+let conditions
 
 boutton.addEventListener('click', ()=>{ //ajout d'un ecouteur quand le boutton est cliqué
 	sessionStorage.clear()    // efface la sessionStorage       
@@ -26,10 +27,22 @@ boutton.addEventListener('click', ()=>{ //ajout d'un ecouteur quand le boutton e
 	addLeaves()
 } ) 
 
+async function weather(location) {
+	const response = await fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${location}?unitGroup=metric&key=RWQ5ZQX23WTSV4DU6GZ2BCA25&elements=conditions&contentType=json`)
+	const forecast = await response.json()
+	return (forecast.currentConditions.conditions)
+}
+
+async function assignConditions()
+{
+	conditions = await weather("Lyon")
+	console.log(conditions);
+}
+
 function startTimer () {        // recupere la date actuelle et l'affiche ds le html
 	timer = setInterval(()=>{  
 	date = new Date()
-	let time = date.getHours() + ":" +(date.getMinutes() < 10 ? '0' : '') + date.getMinutes() + ":" +(date.getSeconds() < 10 ? '0' : '') + date.getSeconds();                                                
+	let time = date.getHours() + ":" + (date.getMinutes() < 10 ? '0' : '') + date.getMinutes() + ":" +(date.getSeconds() < 10 ? '0' : '') + date.getSeconds();                                                
 	h1.innerHTML =time;
    }, 1000);
 }
@@ -77,7 +90,7 @@ function deadLeaves()
 	let imgs = document.querySelectorAll('img');
 	let i = (imgs.length > MAXCOUNTER ? (imgs.length - counter) : 0)
 	deadLeaf = setInterval(() => {
-		imgs[i].style.top = 85 + "%"
+		imgs[i].style.top = 90 + "%"
 		imgs[i].style.filter = "grayscale(0.8)"
 		imgs[i].style.transform = "rotate(90deg)"
 		i++
