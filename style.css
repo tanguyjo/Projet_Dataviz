@@ -8,3 +8,7 @@ body {
 	background-blend-mode: normal;
 }
 
+.forecast{
+	color: black;
+	margin-left: 70%;
+}

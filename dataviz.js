@@ -29,7 +29,7 @@ boutton.addEventListener('click', ()=>{ //ajout d'un ecouteur quand le boutton e
 	addLeaves()
 } ) 
 
-valider.addEventListener("click", () => {
+validate.addEventListener("click", () => {
 	weatherImg.innerHTML = ""
 	assignConditions(input.value)
 	input.value = ""
@@ -37,6 +37,10 @@ valider.addEventListener("click", () => {
 
 async function weather(location) {
 	const response = await fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${location}?unitGroup=metric&key=RWQ5ZQX23WTSV4DU6GZ2BCA25&elements=conditions&contentType=json`)
+	if (response.status == "400")
+	{
+		return (false)
+	}
 	const forecast = await response.json()
 	return (forecast.currentConditions.conditions)
 }
@@ -44,8 +48,13 @@ async function weather(location) {
 async function assignConditions(location)
 {
 	conditions = await weather(location)
+	if (!conditions)
+	{
+		weatherImg.innerHTML = `<h2>Forecast unavailable</h2>`
+		sessionStorage.setItem('location', 'unavailable')
+		return
+	}
 	const imgcondition = document.createElement('img')
-	imgcondition.style.marginLeft = "75%"
 	imgcondition.style.height = "200px"
 	if (conditions.includes("Clear"))
 	{
@@ -67,11 +76,16 @@ async function assignConditions(location)
 		console.log('overcast');
 		imgcondition.setAttribute('src', 'Overcast.png')
 	}
-	else if (conditions.includes("Cloudy"))
+	else if (conditions.includes("cloudy"))
 	{
 		console.log('cloudy');
 		imgcondition.setAttribute('src', 'Cloudy.png')
 	}
+	else
+	{
+		weatherImg.innerHTML = "Forecast unavailable"
+	}
+	sessionStorage.setItem('location', location)
 	weatherImg.appendChild(imgcondition)
 }
 
@@ -108,7 +122,7 @@ function addLeaves(){    // fx qui ajoute des feuilles Ã  interval regulier et Ã
 		getRandomx()
 		getRandomy()
 		storageLeaf.push({x : randomx, y : randomy})
-		sessionStorage.setItem("key",JSON.stringify(storageLeaf));
+		sessionStorage.setItem("Leaves",JSON.stringify(storageLeaf));
 		addOneLeaf(randomx,randomy);
 		counter++;
 		console.log(counter)
@@ -139,8 +153,22 @@ function deadLeaves()
 	
 }
 
-if (sessionStorage.getItem("key")) {
-	storageLeaf = JSON.parse(sessionStorage.getItem("key"))
+if (sessionStorage.getItem('location'))
+{
+	if (sessionStorage.getItem('location') == 'unavailable')
+	{
+		weatherImg.innerHTML = `<h2>Forecast unavailable</h2>`
+	}
+	else {
+		assignConditions(sessionStorage.getItem('location'))
+	}
+}
+else{
+	assignConditions("Lyon")
+}
+
+if (sessionStorage.getItem("Leaves")) {
+	storageLeaf = JSON.parse(sessionStorage.getItem("Leaves"))
 	console.log(storageLeaf)
 	for(i = 0; i < storageLeaf.length; i++){
 		addOneLeaf(storageLeaf[i].x,storageLeaf[i].y)
@@ -154,10 +182,10 @@ if (sessionStorage.getItem("key")) {
 	{
 		deadLeaves()
 	}
+	
 }
 else {
 	addLeaves()
 }
 
 startTimer()
-assignConditions("Lyon")
