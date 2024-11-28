@@ -10,5 +10,16 @@ body {
 
 .forecast{
 	color: black;
+	display: block;
+	position: absolute;
+	bottom: 70%;
 	margin-left: 70%;
+}
+
+#Global{
+	display: flex;
+	flex-wrap: wrap;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 10px;
 }

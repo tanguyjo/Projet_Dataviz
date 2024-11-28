@@ -4,6 +4,7 @@ const boutton = document.getElementById('boutton')
 const weatherImg = document.querySelector('.forecast');
 const validate = document.querySelector('#valider');
 const input = document.querySelector('input')
+const city = document.querySelector('#city');
 const XMAX = 65
 const XMIN = 30
 const YMAX = 60
@@ -26,7 +27,9 @@ boutton.addEventListener('click', ()=>{ //ajout d'un ecouteur quand le boutton e
 	clearInterval(addLeaf) // arrete l'intervale'addLeaf'
 	counter = 0
 	storageLeaf = []
+	weatherImg.innerHTML = ""
 	addLeaves()
+	assignConditions("Lyon")
 } ) 
 
 validate.addEventListener("click", () => {
@@ -42,18 +45,12 @@ async function weather(location) {
 		return (false)
 	}
 	const forecast = await response.json()
+	city.innerHTML = `${forecast.address}`
 	return (forecast.currentConditions.conditions)
 }
 
-async function assignConditions(location)
+function imgConditions(conditions)
 {
-	conditions = await weather(location)
-	if (!conditions)
-	{
-		weatherImg.innerHTML = `<h2>Forecast unavailable</h2>`
-		sessionStorage.setItem('location', 'unavailable')
-		return
-	}
 	const imgcondition = document.createElement('img')
 	imgcondition.style.height = "200px"
 	if (conditions.includes("Clear"))
@@ -85,8 +82,22 @@ async function assignConditions(location)
 	{
 		weatherImg.innerHTML = "Forecast unavailable"
 	}
-	sessionStorage.setItem('location', location)
 	weatherImg.appendChild(imgcondition)
+}
+
+async function assignConditions(location)
+{
+	conditions = await weather(location)
+	if (!conditions)
+	{
+		weatherImg.innerHTML = `<h2>Forecast unavailable</h2>`
+		sessionStorage.setItem('location', 'unavailable')
+		sessionStorage.setItem('forecast', 'unavailable')
+		return
+	}
+	imgConditions(conditions)
+	sessionStorage.setItem('location', location)
+	sessionStorage.setItem('forecast', conditions)
 }
 
 function startTimer () {        // recupere la date actuelle et l'affiche ds le html
@@ -153,39 +164,51 @@ function deadLeaves()
 	
 }
 
-if (sessionStorage.getItem('location'))
+function start()
 {
-	if (sessionStorage.getItem('location') == 'unavailable')
+	if (sessionStorage.getItem('location'))
+		{
+			if (sessionStorage.getItem('location') == 'unavailable')
+			{
+				weatherImg.innerHTML = `<h2>Forecast unavailable</h2>`
+			}
+			else {
+				city.innerHTML = sessionStorage.getItem('location')
+			}
+		}
+	else{
+		assignConditions("Lyon")
+	}
+
+	if (sessionStorage.getItem('forecast'))
 	{
-		weatherImg.innerHTML = `<h2>Forecast unavailable</h2>`
+		if (sessionStorage.getItem('forecast') != 'unavailable')
+		{
+			imgConditions(sessionStorage.getItem('forecast'))
+		}
+	}
+
+	if (sessionStorage.getItem("Leaves")) {
+		storageLeaf = JSON.parse(sessionStorage.getItem("Leaves"))
+		console.log(storageLeaf)
+		for(i = 0; i < storageLeaf.length; i++){
+			addOneLeaf(storageLeaf[i].x,storageLeaf[i].y)
+			counter++;
+		} 
+		if(counter<MAXCOUNTER)
+		{
+			addLeaves()
+		}
+		if (storageLeaf.length >= MAXCOUNTER)
+		{
+			deadLeaves()
+		}	
 	}
 	else {
-		assignConditions(sessionStorage.getItem('location'))
-	}
-}
-else{
-	assignConditions("Lyon")
-}
-
-if (sessionStorage.getItem("Leaves")) {
-	storageLeaf = JSON.parse(sessionStorage.getItem("Leaves"))
-	console.log(storageLeaf)
-	for(i = 0; i < storageLeaf.length; i++){
-		addOneLeaf(storageLeaf[i].x,storageLeaf[i].y)
-		counter++;
-	} 
-	if(counter<MAXCOUNTER)
-	{
 		addLeaves()
 	}
-	if (storageLeaf.length >= MAXCOUNTER)
-	{
-		deadLeaves()
-	}
-	
-}
-else {
-	addLeaves()
+	startTimer()
 }
 
-startTimer()
+start()
+
