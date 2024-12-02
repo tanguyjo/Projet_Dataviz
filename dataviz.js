@@ -1,11 +1,10 @@
 const div = document.querySelector('.feuille'); 
 const h1 = document.querySelector('h1')
-const boutton = document.getElementById('boutton')
+const button = document.getElementById('boutton')
 const weatherImg = document.querySelector('.forecast');
 const validate = document.querySelector('#valider');
 const input = document.querySelector('input')
 const city = document.querySelector('#city');
-
 
 const XMAX = 65
 const XMIN = 30
@@ -13,10 +12,11 @@ const YMAX = 60
 const YMIN = 5
 const MAXCOUNTER = 60
 
+let leafColor;
 let addLeaf;
 let deadLeaf;
 let timer;  
-let date = new Date()
+let date = new Date();
 let randomx = 0;
 let randomy = 0;
 let storageLeaf = [];
@@ -24,88 +24,39 @@ let counter = 0;
 let conditions;
 let addTimerCity;
 
-boutton.addEventListener('click', ()=>{ //ajout d'un ecouteur quand le boutton est cliqué
-	sessionStorage.clear()    // efface la sessionStorage
-	div.innerHTML = ""         // efface le html
-	clearInterval(addLeaf) // arrete l'intervale'addLeaf'
-	clearInterval(addTimerCity)
-	counter = 0
-	storageLeaf = []
-	weatherImg.innerHTML = ""
+button.addEventListener('click', ()=>{ //ajout d'un ecouteur quand le boutton est cliqué
+	clearAnimation()
 	addLeaves()
 	assignConditions("Lyon")
 } )
 
 validate.addEventListener("click", () => { // Ajout d'un ecouteur quand le bouton valider est clique
-	sessionStorage.clear()
-	div.innerHTML = ""
-	weatherImg.innerHTML = ""                 // vide le innerHTML
+	clearAnimation()
 	assignConditions(input.value)              // on recupere la ville donne  pour recuperer la conditions de la ville donne
 	input.value = ""                            // vide la valeur de l'input
-	clearInterval(addTimerCity);
-	clearInterval(addLeaf);
-	counter = 0;
-	storageLeaf = [];
 	addLeaves();
-	 
 })
+
+function clearAnimation()
+{
+	sessionStorage.clear()
+	div.innerHTML = ""
+	clearInterval(addLeaf)
+	clearInterval(addTimerCity)
+	counter = 0
+	storageLeaf = []
+	weatherImg.innerHTML = ""
+}
 
 async function weather(location) { // Fonction qui va recuperer les donnes de la meteo de la ville
 	const response = await fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${location}?unitGroup=metric&key=RWQ5ZQX23WTSV4DU6GZ2BCA25&elements=conditions,temp,sunrise,sunset&contentType=json`)
-	
 	if (response.status == "400")  // condition que si la ville n'est pas trouver la fonction retourne False
 	{
 		return (false)
 	}
 	const forecast = await response.json()
-	console.log(forecast.currentConditions.temp)
-	let temp = forecast.currentConditions.temp;
-	let emoji = '';
-
-// Determine emoji based on temperature range
-	if (temp <= 1) {
-		emoji = '🥶';
-	} else if (temp <= 10) {
-		emoji = '😬';
-	} else if (temp <= 20) {
-		emoji = '😃';
-	} else if (temp < 30) {
-		emoji = '😍';
-	} else if (temp < 40) {
-		emoji = '🤩';
-	}
 	sessionStorage.setItem("forecasts",JSON.stringify(forecast))
-	addTimerCity = setInterval (()=> {
-
-	let offset = parseInt(forecast.tzoffset.toString().split(".")[0])
-	let GeneralHour = (date.getHours() -1);
-	let hour = GeneralHour + offset
-    let minutesold;
-	if(hour>16||hour<6){
-		document.body.style.backgroundColor = 'grey';
-
-	}else{
-		document.body.style.backgroundColor = 'skyblue';
-	}
-	
-	if(forecast.tzoffset.toString().split(".")[1]){
-		 minutesold = parseInt(forecast.tzoffset.toString().split(".")[1])
-	} else {
-		 minutesold = 0
-	}
-	let minutes = date.getMinutes() + (minutesold > 10 ? minutesold * 0.6 : minutesold * 6 )
-    if(minutes>59){
-        minutes -= 60;
-		hour++;}
-		 if(hour>23){
-			 hour -= 24;}
-		 if(hour<0){
-			 hour += 24;}
-		city.innerHTML = `${forecast.address} : ` +  (hour < 10 ? '0' : '') + hour + ":" + (minutes < 10 ? '0' : '') + minutes + ":" +(date.getSeconds() < 10 ? '0' : '') + date.getSeconds()  + "<br>"+ 'Temperature de : '+forecast.currentConditions.temp +" °C" + emoji +"<br>" + "Sunrise:"+forecast.currentConditions.sunrise + "🌞"  +"<br>" + "Sunset:"+forecast.currentConditions.sunset + "🌃";              // Affiche dans l'Html le nom de la Ville
-
-},1000)
-
-	
+	cityinfo(forecast)
 	return (forecast.currentConditions.conditions)
 }
 
@@ -116,11 +67,7 @@ function imgConditions(conditions)          //fonction qui affiche l'image corre
 	if (conditions.includes("Clear"))   // Si la condition contient le mot Clear ca va afficher un Soleil
 	{
 		console.log('clear');
-		imgcondition.setAttribute('src', 'https://clipart-library.com/images/5TRrMA4yc.gif'
-		)
-		// gifElement.src = 'https://example.com/path/to/your/gif.gif';
-		// gifElement.alt = 'A description of the gif';
-		// document.body.appendChild(gifElement);
+		imgcondition.setAttribute('src', 'https://clipart-library.com/images/5TRrMA4yc.gif')
 	}
 	else if (conditions.includes("Snow"))   // Si la condition contient le mot Snow ca va afficher  un bonhomme de neige
 	{
@@ -184,6 +131,7 @@ function getRandomy() {  // renvoie un 'y' alléatoire
 function addOneLeaf(x,y) // fx qui ajoute une feuille
 {
 	const img = document.createElement('img')
+	img.style.filter = leafColor
 	img.style.position = "absolute"
 	img.style.left = x + '%'
 	img.style.top = y + '%'
@@ -225,9 +173,16 @@ function deadLeaves() // fonction qui fait descendre les feuilles
 			
 		}
 	}, 1000)
-	
 }
 
+function changeLeafColor(color)
+{
+	let imgs = document.querySelectorAll('.feuille img');
+	for (let i = 0; i < imgs.length; i++)
+	{
+		imgs[i].style.filter = color
+	}
+}
 
 function cityinfo(forecast){
 	let temp = forecast.currentConditions.temp;
@@ -236,31 +191,35 @@ function cityinfo(forecast){
 // Determine emoji based on temperature range
 	if (temp <= 1) {
 		emoji = '🥶';
+		leafColor = "grayscale(0.9)"
+		changeLeafColor(leafColor)
 	} else if (temp <= 10) {
 		emoji = '😬';
+		leafColor = "grayscale(0.6)"
+		changeLeafColor(leafColor)
 	} else if (temp <= 20) {
 		emoji = '😃';
+		leafColor = "sepia(1) saturate(2)"
+		changeLeafColor(leafColor)
 	} else if (temp < 30) {
 		emoji = '😍';
+		leafColor = "sepia(1) saturate(5)"
+		changeLeafColor(leafColor)
 	} else if (temp < 40) {
 		emoji = '🤩';
+		leafColor = "grayscale(0)"
 	}
 	addTimerCity = setInterval (()=> {
 
 		let offset = parseInt(forecast.tzoffset.toString().split(".")[0])
 		let GeneralHour = (date.getHours() -1);
+		let seconds = date.getSeconds()
 		let hour = GeneralHour + offset
 		let minutesold;
-		if(hour>16||hour<6){
-			document.body.style.backgroundColor = 'grey';
-
-		}else{
-			document.body.style.backgroundColor = 'skyblue';
-		}
-
 		if(forecast.tzoffset.toString().split(".")[1]){
 			minutesold = parseInt(offsetcity.toString().split(".")[1])
-		} else {
+		}
+		else {
 			minutesold = 0
 		}
 		let minutes = date.getMinutes() + (minutesold > 10 ? minutesold * 0.6 : minutesold * 6 )
@@ -271,8 +230,32 @@ function cityinfo(forecast){
 			hour -= 24;}
 		if(hour<0){
 			hour += 24;}
-		city.innerHTML = `${forecast.address} : ` +  (hour < 10 ? '0' : '') + hour + ":" + (minutes < 10 ? '0' : '') + minutes + ":" +(date.getSeconds() < 10 ? '0' : '') + date.getSeconds()  + "<br>"+ 'Temperature de : '+forecast.currentConditions.temp +" °C" + emoji +"<br>" + "Sunrise:"+forecast.currentConditions.sunrise + "🌞"  +"<br>" + "Sunset:"+forecast.currentConditions.sunset + "🌃";              // Affiche dans l'Html le nom de la Ville
-
+		if(hour>=forecast.currentConditions.sunset.substr(0, 2))
+		{
+			if ((hour == forecast.currentConditions.sunset.substr(0, 2) && minutes > forecast.currentConditions.sunset.substr(3, 2) && seconds > forecast.currentConditions.sunset.substr(6, 2)) || hour > forecast.currentConditions.sunset.substr(0, 2))
+			{
+				document.body.style.backgroundColor = 'grey';
+			}
+			else
+			{
+				document.body.style.backgroundColor = 'skyblue';
+			}
+		}
+		else if (hour<=forecast.currentConditions.sunrise.substr(0, 2))
+		{
+			if ((hour == forecast.currentConditions.sunrise.substr(0, 2) && minutes < forecast.currentConditions.sunrise.substr(3, 2) && seconds < forecast.currentConditions.sunrise.substr(6, 2)) || hour < forecast.currentConditions.sunrise.substr(0, 2))
+			{
+				document.body.style.backgroundColor = 'grey';
+			}
+			else
+			{
+				document.body.style.backgroundColor = 'skyblue';
+			}
+		}
+		else{
+			document.body.style.backgroundColor = 'skyblue';
+		}
+		city.innerHTML = `${forecast.address.toUpperCase()} : ` +  (hour < 10 ? '0' : '') + hour + ":" + (minutes < 10 ? '0' : '') + minutes + ":" +(date.getSeconds() < 10 ? '0' : '') + date.getSeconds()  + "<br>"+ 'Temperature : '+forecast.currentConditions.temp +" °C" + emoji +"<br>" + "Sunrise:"+forecast.currentConditions.sunrise + "🌞"  +"<br>" + "Sunset:"+forecast.currentConditions.sunset + "🌃";              // Affiche dans l'Html le nom de la Ville
 	},1000)
 }
 
@@ -291,7 +274,6 @@ function start()                 // Fonction start qui execute le code au lancem
 	else{                                                // SI on a pas de ville on met Lyon comme de bases
 		assignConditions("Lyon")
 	}
-
 	if (sessionStorage.getItem('forecast'))                   // Si on  a un forecast dans le session storage
 	{
 		if (sessionStorage.getItem('forecast') != 'unavailable')   // SI on a un forecast dans le session storage qui est different de 'unavailable'
@@ -316,19 +298,18 @@ function start()                 // Fonction start qui execute le code au lancem
 			deadLeaves()                          // on les fait tomber
 		}	
 	}
-	else {     // Sinon on ajoute des feuilles
+	else {// Sinon on ajoute des feuilles
 		addLeaves()
 	}
 	startTimer()
 
 	let cityinfos = JSON.parse(sessionStorage.getItem('forecasts'))
-	
-	if(cityinfos){
-
+	console.log(cityinfos);
+	if(cityinfos)
+	{
 		cityinfo(cityinfos)
 	}
 	
 }
 
 start()
-
