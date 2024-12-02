@@ -232,7 +232,7 @@ function cityinfo(forecast){
 			hour += 24;}
 		if(hour>=forecast.currentConditions.sunset.substr(0, 2))
 		{
-			if ((hour == forecast.currentConditions.sunset.substr(0, 2) && minutes > forecast.currentConditions.sunset.substr(3, 2) && seconds > forecast.currentConditions.sunset.substr(6, 2)) || hour > forecast.currentConditions.sunset.substr(0, 2))
+			if ((hour == forecast.currentConditions.sunset.substr(0, 2) && minutes > forecast.currentConditions.sunset.substr(3, 2)) || hour > forecast.currentConditions.sunset.substr(0, 2) || (hour == forecast.currentConditions.sunset.substr(0, 2) && minutes == forecast.currentConditions.sunset.substr(3, 2) && seconds > forecast.currentConditions.sunset.substr(6, 2)))
 			{
 				document.body.style.backgroundColor = 'grey';
 			}
@@ -243,7 +243,7 @@ function cityinfo(forecast){
 		}
 		else if (hour<=forecast.currentConditions.sunrise.substr(0, 2))
 		{
-			if ((hour == forecast.currentConditions.sunrise.substr(0, 2) && minutes < forecast.currentConditions.sunrise.substr(3, 2) && seconds < forecast.currentConditions.sunrise.substr(6, 2)) || hour < forecast.currentConditions.sunrise.substr(0, 2))
+			if ((hour == forecast.currentConditions.sunrise.substr(0, 2) && minutes < forecast.currentConditions.sunrise.substr(3, 2)) || hour < forecast.currentConditions.sunrise.substr(0, 2) || (hour == forecast.currentConditions.sunrise.substr(0, 2) && minutes == forecast.currentConditions.sunrise.substr(3, 2) && seconds < forecast.currentConditions.sunrise.substr(6, 2)))
 			{
 				document.body.style.backgroundColor = 'grey';
 			}
