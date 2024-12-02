@@ -205,7 +205,7 @@ function cityinfo(forecast){
 		emoji = '😍';
 		leafColor = "sepia(1) saturate(5)"
 		changeLeafColor(leafColor)
-	} else if (temp < 40) {
+	} else if (temp >= 30) {
 		emoji = '🤩';
 		leafColor = "grayscale(0)"
 	}
@@ -217,7 +217,7 @@ function cityinfo(forecast){
 		let hour = GeneralHour + offset
 		let minutesold;
 		if(forecast.tzoffset.toString().split(".")[1]){
-			minutesold = parseInt(offsetcity.toString().split(".")[1])
+			minutesold = parseInt(forecast.tzoffset.toString().split(".")[1])
 		}
 		else {
 			minutesold = 0
