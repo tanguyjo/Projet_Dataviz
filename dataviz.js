@@ -82,12 +82,12 @@ function imgConditions(conditions)          //fonction qui affiche l'image corre
 	else if (conditions.includes("Overcast"))  // Si la condition contient le mot Overcast ca va afficher un Nuage gris
 	{
 		console.log('overcast');
-		imgcondition.setAttribute('src', 'Overcast.gif')
+		imgcondition.setAttribute('src', './Overcast.gif')
 	}
 	else if (conditions.includes("cloudy"))   // Si la condition contient le mot Cloudy ca va afficher un nuage
 	{
 		console.log('cloudy');
-		imgcondition.setAttribute('src', 'Cloudy.webp')
+		imgcondition.setAttribute('src', './Cloudy.webp')
 	}
 	else                                         // Sinon on affiche un message qu'il y a pas de Forecast Disponible
 	{
