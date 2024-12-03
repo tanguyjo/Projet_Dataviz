@@ -23,6 +23,7 @@ let storageLeaf = [];
 let counter = 0;
 let conditions;
 let addTimerCity;
+let imgcondition;
 
 button.addEventListener('click', ()=>{ //ajout d'un ecouteur quand le boutton est cliqué
 	clearAnimation()
@@ -62,12 +63,13 @@ async function weather(location) { // Fonction qui va recuperer les donnes de la
 
 function imgConditions(conditions)          //fonction qui affiche l'image correspondante a la meteo actuel
 {
-	const imgcondition = document.createElement('img')
+	 imgcondition = document.createElement('img')
 	imgcondition.style.height = "200px"
 	if (conditions.includes("Clear"))   // Si la condition contient le mot Clear ca va afficher un Soleil
 	{
 		console.log('clear');
 		imgcondition.setAttribute('src', './Sun.gif')
+		
 	}
 	else if (conditions.includes("Snow"))   // Si la condition contient le mot Snow ca va afficher  un bonhomme de neige
 	{
@@ -157,6 +159,11 @@ function addLeaves(){    // fx qui ajoute des feuilles à interval regulier et �
 	
 	}, 1000)
 }
+//@TODO mettre des gouttes sur les feuilles
+// function creerDesGouttes(){
+// 	 const gouttes = document.createElement('div');
+//     gouttes.classList.add(gte)
+// }
 
 function deadLeaves() // fonction qui fait descendre les feuilles
 {
@@ -164,7 +171,7 @@ function deadLeaves() // fonction qui fait descendre les feuilles
 	let i = 0;
 	deadLeaf = setInterval(() => {
 		imgs[i].style.top = 90 + "%"  // on fait descendre les feuilles au pieds de l'arbre
-		imgs[i].style.filter = "grayscale(0.8)" // on leur donne une couleur grise
+		//imgs[i].style.filter = "grayscale(0.8)" // on leur donne une couleur grise
 		imgs[i].style.transform = "rotate(90deg)" // on fait coucher les feuilles
 		i++;
 		if (i >= imgs.length)  
@@ -172,6 +179,9 @@ function deadLeaves() // fonction qui fait descendre les feuilles
 			clearInterval(deadLeaf)
 			
 		}
+
+		
+
 	}, 1000)
 }
 
@@ -183,6 +193,7 @@ function changeLeafColor(color)
 		imgs[i].style.filter = color
 	}
 }
+
 
 function cityinfo(forecast){
 	let temp = forecast.currentConditions.temp;
@@ -235,6 +246,10 @@ function cityinfo(forecast){
 			if ((hour == forecast.currentConditions.sunset.substr(0, 2) && minutes > forecast.currentConditions.sunset.substr(3, 2)) || hour > forecast.currentConditions.sunset.substr(0, 2) || (hour == forecast.currentConditions.sunset.substr(0, 2) && minutes == forecast.currentConditions.sunset.substr(3, 2) && seconds > forecast.currentConditions.sunset.substr(6, 2)))
 			{
 				document.body.style.backgroundColor = 'grey';
+				if(forecast.currentConditions.conditions.includes("Clear")){
+					imgcondition.setAttribute('src', 'https://media.tenor.com/DTIl6DWhrZwAAAAj/moon-spacedoodles.gif')
+				}
+
 			}
 			else
 			{
@@ -246,6 +261,9 @@ function cityinfo(forecast){
 			if ((hour == forecast.currentConditions.sunrise.substr(0, 2) && minutes < forecast.currentConditions.sunrise.substr(3, 2)) || hour < forecast.currentConditions.sunrise.substr(0, 2) || (hour == forecast.currentConditions.sunrise.substr(0, 2) && minutes == forecast.currentConditions.sunrise.substr(3, 2) && seconds < forecast.currentConditions.sunrise.substr(6, 2)))
 			{
 				document.body.style.backgroundColor = 'grey';
+				if(forecast.currentConditions.conditions.includes("Clear")){
+					imgcondition.setAttribute('src', 'https://media.tenor.com/DTIl6DWhrZwAAAAj/moon-spacedoodles.gif')
+				}
 			}
 			else
 			{
@@ -258,6 +276,7 @@ function cityinfo(forecast){
 		city.innerHTML = `${forecast.address.toUpperCase()} : ` +  (hour < 10 ? '0' : '') + hour + ":" + (minutes < 10 ? '0' : '') + minutes + ":" +(date.getSeconds() < 10 ? '0' : '') + date.getSeconds()  + "<br>"+ 'Temperature : '+forecast.currentConditions.temp +" °C" + emoji +"<br>" + "Sunrise:"+forecast.currentConditions.sunrise + "🌞"  +"<br>" + "Sunset:"+forecast.currentConditions.sunset + "🌃";              // Affiche dans l'Html le nom de la Ville
 	},1000)
 }
+
 
 function start()                 // Fonction start qui execute le code au lancement de la page, qui gere le timer, le sessionstorage
 {
