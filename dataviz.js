@@ -67,27 +67,27 @@ function imgConditions(conditions)          //fonction qui affiche l'image corre
 	if (conditions.includes("Clear"))   // Si la condition contient le mot Clear ca va afficher un Soleil
 	{
 		console.log('clear');
-		imgcondition.setAttribute('src', 'https://clipart-library.com/images/5TRrMA4yc.gif')
+		imgcondition.setAttribute('src', './Sun.gif')
 	}
 	else if (conditions.includes("Snow"))   // Si la condition contient le mot Snow ca va afficher  un bonhomme de neige
 	{
 		console.log('snow');
-		imgcondition.setAttribute('src', 'https://www.icegif.com/wp-content/uploads/2023/12/icegif-131.gif')
+		imgcondition.setAttribute('src', './Snow.gif')
 	}
 	else if (conditions.includes("Rain"))  // Si la condition contient le mot Rain ca va afficher un Nuage et de la pluie
 	{
 		console.log('rain');
-		imgcondition.setAttribute('src', 'https://img.clipart-library.com/2/clip-rain-gif/clip-rain-gif-4.gif')
+		imgcondition.setAttribute('src', './Rain.gif')
 	}
 	else if (conditions.includes("Overcast"))  // Si la condition contient le mot Overcast ca va afficher un Nuage gris
 	{
 		console.log('overcast');
-		imgcondition.setAttribute('src', 'https://clipart-library.com/images/riLory5i8.gif')
+		imgcondition.setAttribute('src', 'Overcast.gif')
 	}
 	else if (conditions.includes("cloudy"))   // Si la condition contient le mot Cloudy ca va afficher un nuage
 	{
 		console.log('cloudy');
-		imgcondition.setAttribute('src', 'https://media3.giphy.com/media/xUOwFXiC5Nfq6SKBKo/giphy.gif')
+		imgcondition.setAttribute('src', 'Cloudy.webp')
 	}
 	else                                         // Sinon on affiche un message qu'il y a pas de Forecast Disponible
 	{
