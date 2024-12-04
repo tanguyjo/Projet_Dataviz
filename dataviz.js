@@ -63,7 +63,7 @@ async function weather(location) { // Fonction qui va recuperer les donnes de la
 
 function imgConditions(conditions)          //fonction qui affiche l'image correspondante a la meteo actuel
 {
-	 imgcondition = document.createElement('img')
+	imgcondition = document.createElement('img')
 	imgcondition.style.height = "200px"
 	if (conditions.includes("Clear"))   // Si la condition contient le mot Clear ca va afficher un Soleil
 	{
@@ -123,11 +123,9 @@ function startTimer () {        // recupere la date actuelle et l'affiche ds le 
 
 function getRandomx() { // renvoie un 'x' alléatoire
 	randomx = Math.random() * (XMAX - XMIN) + XMIN;
-	return randomx
 }
 function getRandomy() {  // renvoie un 'y' alléatoire
 	randomy = Math.random() * (YMAX - YMIN) + YMIN;
-	return randomy
 }
 
 function addOneLeaf(x,y) // fx qui ajoute une feuille
@@ -159,11 +157,7 @@ function addLeaves(){    // fx qui ajoute des feuilles à interval regulier et �
 	
 	}, 1000)
 }
-//@TODO mettre des gouttes sur les feuilles
-// function creerDesGouttes(){
-// 	 const gouttes = document.createElement('div');
-//     gouttes.classList.add(gte)
-// }
+
 
 function deadLeaves() // fonction qui fait descendre les feuilles
 {
@@ -179,9 +173,6 @@ function deadLeaves() // fonction qui fait descendre les feuilles
 			clearInterval(deadLeaf)
 			
 		}
-
-		
-
 	}, 1000)
 }
 
@@ -243,39 +234,45 @@ function cityinfo(forecast){
 			hour -= 24;}
 		if(hour<0){
 			hour += 24;}
-		if(hour>=currentConditions.sunset.substr(0, 2))
+		if (currentConditions.sunset && currentConditions.sunrise)
 		{
-			if ((hour == currentConditions.sunset.substr(0, 2) && minutes > currentConditions.sunset.substr(3, 2)) || hour > currentConditions.sunset.substr(0, 2) || (hour == currentConditions.sunset.substr(0, 2) && minutes == currentConditions.sunset.substr(3, 2) && seconds > currentConditions.sunset.substr(6, 2)))
+			if(hour>=currentConditions.sunset.substr(0, 2))
 			{
-				document.body.style.backgroundColor = 'grey';
-				if(currentConditions.conditions.includes("Clear")){
-					imgcondition.setAttribute('src', 'https://media.tenor.com/DTIl6DWhrZwAAAAj/moon-spacedoodles.gif')
+				if ((hour == currentConditions.sunset.substr(0, 2) && minutes > currentConditions.sunset.substr(3, 2)) || hour > currentConditions.sunset.substr(0, 2) || (hour == currentConditions.sunset.substr(0, 2) && minutes == currentConditions.sunset.substr(3, 2) && seconds > currentConditions.sunset.substr(6, 2)))
+				{
+					document.body.style.backgroundColor = 'grey';
+					if(currentConditions.conditions.includes("Clear")){
+						imgcondition.setAttribute('src', 'https://media.tenor.com/DTIl6DWhrZwAAAAj/moon-spacedoodles.gif')
+					}
+		
 				}
-
-			}
-			else
-			{
-				document.body.style.backgroundColor = 'skyblue';
-			}
-		}
-		else if (hour<=currentConditions.sunrise.substr(0, 2))
-		{
-			if ((hour == currentConditions.sunrise.substr(0, 2) && minutes < currentConditions.sunrise.substr(3, 2)) || hour < currentConditions.sunrise.substr(0, 2) || (hour == currentConditions.sunrise.substr(0, 2) && minutes == currentConditions.sunrise.substr(3, 2) && seconds < currentConditions.sunrise.substr(6, 2)))
-			{
-				document.body.style.backgroundColor = 'grey';
-				if(currentConditions.conditions.includes("Clear")){
-					imgcondition.setAttribute('src', 'https://media.tenor.com/DTIl6DWhrZwAAAAj/moon-spacedoodles.gif')
+				else
+				{
+					document.body.style.backgroundColor = 'skyblue';
 				}
 			}
-			else
+			else if (hour<=currentConditions.sunrise.substr(0, 2))
 			{
+				if ((hour == currentConditions.sunrise.substr(0, 2) && minutes < currentConditions.sunrise.substr(3, 2)) || hour < currentConditions.sunrise.substr(0, 2) || (hour == currentConditions.sunrise.substr(0, 2) && minutes == currentConditions.sunrise.substr(3, 2) && seconds < currentConditions.sunrise.substr(6, 2)))
+				{
+					document.body.style.backgroundColor = 'grey';
+					if(currentConditions.conditions.includes("Clear")){
+						imgcondition.setAttribute('src', 'https://media.tenor.com/DTIl6DWhrZwAAAAj/moon-spacedoodles.gif')
+					}
+				}
+				else
+				{
+					document.body.style.backgroundColor = 'skyblue';
+				}
+			}
+			else{
 				document.body.style.backgroundColor = 'skyblue';
 			}
+			city.innerHTML = `${forecast.address.toUpperCase()} : ` +  (hour < 10 ? '0' : '') + hour + ":" + (minutes < 10 ? '0' : '') + minutes + ":" +(date.getSeconds() < 10 ? '0' : '') + date.getSeconds()  + "<br>"+ 'Temperature : '+currentConditions.temp +" °C" + emoji +"<br>" + "Sunrise:"+currentConditions.sunrise + "🌞"  +"<br>" + "Sunset:"+currentConditions.sunset + "🌃";
 		}
-		else{
-			document.body.style.backgroundColor = 'skyblue';
+		else {
+			city.innerHTML = `${forecast.address.toUpperCase()} : ` +  (hour < 10 ? '0' : '') + hour + ":" + (minutes < 10 ? '0' : '') + minutes + ":" +(date.getSeconds() < 10 ? '0' : '') + date.getSeconds()  + "<br>"+ 'Temperature : '+currentConditions.temp +" °C" + emoji +"<br>" + "Sunrise: No Sunrise 🌞"  +"<br>" + "Sunset: No Sunset 🌃";
 		}
-		city.innerHTML = `${forecast.address.toUpperCase()} : ` +  (hour < 10 ? '0' : '') + hour + ":" + (minutes < 10 ? '0' : '') + minutes + ":" +(date.getSeconds() < 10 ? '0' : '') + date.getSeconds()  + "<br>"+ 'Temperature : '+currentConditions.temp +" °C" + emoji +"<br>" + "Sunrise:"+currentConditions.sunrise + "🌞"  +"<br>" + "Sunset:"+currentConditions.sunset + "🌃";              // Affiche dans l'Html le nom de la Ville
 	},1000)
 }
 
@@ -292,7 +289,7 @@ function start()                 // Fonction start qui execute le code au lancem
 				city.innerHTML = sessionStorage.getItem('location')
 			}
 		}
-	else{                                                // SI on a pas de ville on met Lyon comme de bases
+	else{                                                // SI on a pas de ville on met Lyon comme Ville par défaut
 		assignConditions("Lyon")
 	}
 	if (sessionStorage.getItem('forecast'))                   // Si on  a un forecast dans le session storage
