@@ -196,7 +196,8 @@ function changeLeafColor(color)
 
 
 function cityinfo(forecast){
-	let temp = forecast.currentConditions.temp;
+	let currentConditions = forecast.currentConditions
+	let temp = currentConditions.temp;
 	let emoji = '';
 
 // Determine emoji based on temperature range
@@ -222,13 +223,14 @@ function cityinfo(forecast){
 	}
 	addTimerCity = setInterval (()=> {
 
-		let offset = parseInt(forecast.tzoffset.toString().split(".")[0])
+		let tzoffestSplitted = forecast.tzoffset.toString().split(".")
+		let offset = parseInt(tzoffestSplitted[0])
 		let GeneralHour = (date.getHours() -1);
 		let seconds = date.getSeconds()
 		let hour = GeneralHour + offset
 		let minutesold;
-		if(forecast.tzoffset.toString().split(".")[1]){
-			minutesold = parseInt(forecast.tzoffset.toString().split(".")[1])
+		if(tzoffestSplitted[1]){
+			minutesold = parseInt(tzoffestSplitted[1])
 		}
 		else {
 			minutesold = 0
@@ -241,12 +243,12 @@ function cityinfo(forecast){
 			hour -= 24;}
 		if(hour<0){
 			hour += 24;}
-		if(hour>=forecast.currentConditions.sunset.substr(0, 2))
+		if(hour>=currentConditions.sunset.substr(0, 2))
 		{
-			if ((hour == forecast.currentConditions.sunset.substr(0, 2) && minutes > forecast.currentConditions.sunset.substr(3, 2)) || hour > forecast.currentConditions.sunset.substr(0, 2) || (hour == forecast.currentConditions.sunset.substr(0, 2) && minutes == forecast.currentConditions.sunset.substr(3, 2) && seconds > forecast.currentConditions.sunset.substr(6, 2)))
+			if ((hour == currentConditions.sunset.substr(0, 2) && minutes > currentConditions.sunset.substr(3, 2)) || hour > currentConditions.sunset.substr(0, 2) || (hour == currentConditions.sunset.substr(0, 2) && minutes == currentConditions.sunset.substr(3, 2) && seconds > currentConditions.sunset.substr(6, 2)))
 			{
 				document.body.style.backgroundColor = 'grey';
-				if(forecast.currentConditions.conditions.includes("Clear")){
+				if(currentConditions.conditions.includes("Clear")){
 					imgcondition.setAttribute('src', 'https://media.tenor.com/DTIl6DWhrZwAAAAj/moon-spacedoodles.gif')
 				}
 
@@ -256,12 +258,12 @@ function cityinfo(forecast){
 				document.body.style.backgroundColor = 'skyblue';
 			}
 		}
-		else if (hour<=forecast.currentConditions.sunrise.substr(0, 2))
+		else if (hour<=currentConditions.sunrise.substr(0, 2))
 		{
-			if ((hour == forecast.currentConditions.sunrise.substr(0, 2) && minutes < forecast.currentConditions.sunrise.substr(3, 2)) || hour < forecast.currentConditions.sunrise.substr(0, 2) || (hour == forecast.currentConditions.sunrise.substr(0, 2) && minutes == forecast.currentConditions.sunrise.substr(3, 2) && seconds < forecast.currentConditions.sunrise.substr(6, 2)))
+			if ((hour == currentConditions.sunrise.substr(0, 2) && minutes < currentConditions.sunrise.substr(3, 2)) || hour < currentConditions.sunrise.substr(0, 2) || (hour == currentConditions.sunrise.substr(0, 2) && minutes == currentConditions.sunrise.substr(3, 2) && seconds < currentConditions.sunrise.substr(6, 2)))
 			{
 				document.body.style.backgroundColor = 'grey';
-				if(forecast.currentConditions.conditions.includes("Clear")){
+				if(currentConditions.conditions.includes("Clear")){
 					imgcondition.setAttribute('src', 'https://media.tenor.com/DTIl6DWhrZwAAAAj/moon-spacedoodles.gif')
 				}
 			}
@@ -273,7 +275,7 @@ function cityinfo(forecast){
 		else{
 			document.body.style.backgroundColor = 'skyblue';
 		}
-		city.innerHTML = `${forecast.address.toUpperCase()} : ` +  (hour < 10 ? '0' : '') + hour + ":" + (minutes < 10 ? '0' : '') + minutes + ":" +(date.getSeconds() < 10 ? '0' : '') + date.getSeconds()  + "<br>"+ 'Temperature : '+forecast.currentConditions.temp +" °C" + emoji +"<br>" + "Sunrise:"+forecast.currentConditions.sunrise + "🌞"  +"<br>" + "Sunset:"+forecast.currentConditions.sunset + "🌃";              // Affiche dans l'Html le nom de la Ville
+		city.innerHTML = `${forecast.address.toUpperCase()} : ` +  (hour < 10 ? '0' : '') + hour + ":" + (minutes < 10 ? '0' : '') + minutes + ":" +(date.getSeconds() < 10 ? '0' : '') + date.getSeconds()  + "<br>"+ 'Temperature : '+currentConditions.temp +" °C" + emoji +"<br>" + "Sunrise:"+currentConditions.sunrise + "🌞"  +"<br>" + "Sunset:"+currentConditions.sunset + "🌃";              // Affiche dans l'Html le nom de la Ville
 	},1000)
 }
 
